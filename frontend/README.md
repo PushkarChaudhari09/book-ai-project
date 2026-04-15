@@ -23,19 +23,19 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
 
 ### Screenshots
 
-# 1. Home Page
+ 1. Home Page
 
 - C:\Users\pushk\book_ai_project\frontend\Scrreenshots\Home.png.png
 
-# 2. Search Results
+ 2. Search Results
 
 - C:\Users\pushk\book_ai_project\frontend\Scrreenshots\Search.png
 
-# 3. Book Detail Page
+ 3. Book Detail Page
 
 - C:\Users\pushk\book_ai_project\frontend\Scrreenshots\Book Details.png
 
-# 4. AI Response
+ 4. AI Response
 
 - C:\Users\pushk\book_ai_project\frontend\Scrreenshots\AI Response.png
 
