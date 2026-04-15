@@ -104,3 +104,22 @@ body {
   margin-top: 5px;
   padding: 10px;
 }
+
+.back-btn {
+  margin-bottom: 15px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.detail {
+  padding: 30px;
+  text-align: left;
+}
+
+.desc {
+  margin: 10px 0;
+}
+
+.card {
+  cursor: pointer;
+}

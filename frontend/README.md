@@ -1,70 +1,93 @@
-# Getting Started with Create React App
+BookAI – Document Intelligence Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack AI-powered book discovery platform built using Django REST Framework + ReactJS with a RAG (Retrieval-Augmented Generation) pipeline.
 
-## Available Scripts
+Features
 
-In the project directory, you can run:
+- Google-like live book search
+- Book detail page
+- AI-based question answering (RAG)
+- Book summary generation
+- Book recommendations
+- REST API backend
+- Fast and responsive UI
 
-### `npm start`
+Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- ReactJS
+- Django REST Framework
+- SQLite
+- Custom RAG + OpenAI (optional fallback)
+- ChromaDB
+- CSV-based ingestion
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Screenshots
 
-### `npm test`
+1. Home Page
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- C:\Users\pushk\book_ai_project\frontend\Scrreenshots\Home.png.png
 
-### `npm run build`
+2. Search Results
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- C:\Users\pushk\book_ai_project\frontend\Scrreenshots\Search.png
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. Book Detail Page
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- C:\Users\pushk\book_ai_project\frontend\Scrreenshots\Book Details.png
 
-### `npm run eject`
+4. AI Response
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- C:\Users\pushk\book_ai_project\frontend\Scrreenshots\AI Response.png
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Setup Instructions
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1. Backend Setup
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+cd backend
 
-## Learn More
+python -m venv venv 
+venv\Scripts\activate 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+pip install -r requirements.txt
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+python manage.py migrate 
+python manage.py runserver
 
-### Code Splitting
+2. Frontend Setup
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+cd frontend
 
-### Analyzing the Bundle Size
+npm install 
+npm start
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+API Documentation
 
-### Making a Progressive Web App
+1. GET APIs
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+/api/books/ → Get all books
+/api/books/<id>/ → Get single book
+/api/recommend/<id>/ → Get recommendations
 
-### Advanced Configuration
+2. POST APIs
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+/api/ask/ → Ask AI question
+/api/summary/ → Generate summary
+/api/books/add/ → Add book
+/api/upload/ → Upload CSV
 
-### Deployment
+Sample Questions & Answers
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. Sample Questions & Answers
+- A fantasy story about a young wizard discovering magic, friendship, and courage.
 
-### `npm run build` fails to minify
+2. Recommend books like Atomic Habits
+- Deep Work, Think and Grow Rich, The Power of Now.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+requirements.txt
+
+django
+djangorestframework
+corsheaders
+chromadb 
+python-dotenv
+

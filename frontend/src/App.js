@@ -7,6 +7,8 @@ function App() {
 
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
+  const [selectedBook, setSelectedBook] = useState(null);
+
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [recommendations, setRecommendations] = useState([]);
@@ -30,13 +32,14 @@ function App() {
     setRecommendations(res.data.recommendations);
   };
 
+  // 🔍 SEARCH FIX
   const filteredBooks = books.filter((b) =>
     b.title.toLowerCase().startsWith(search.toLowerCase())
   );
 
   return (
     <div className="app">
-      
+
       {/* NAVBAR */}
       <div className="navbar">
         <h2>📚 BookAI</h2>
@@ -48,60 +51,92 @@ function App() {
         />
       </div>
 
-      {/* SEARCH DROPDOWN */}
-      {search && (
+      {/* 🔍 SEARCH DROPDOWN */}
+      {search && !selectedBook && (
         <div className="dropdown">
           {filteredBooks.slice(0, 5).map((b) => (
-            <div key={b.id}>{b.title}</div>
+            <div
+              key={b.id}
+              className="dropdown-item"
+              onClick={() => {
+                setSelectedBook(b);
+                setSearch("");
+                setAnswer("");
+                setRecommendations([]);
+              }}
+            >
+              🔍 {b.title}
+            </div>
           ))}
         </div>
       )}
 
-      {/* HERO */}
-      <div className="hero">
-        <h1>Discover Books with AI</h1>
+      {/* 📘 BOOK DETAIL PAGE */}
+      {selectedBook ? (
+        <div className="detail">
 
-        <div className="askBox">
-          <input
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask anything..."
-          />
-          <button onClick={askQuestion}>Ask</button>
+          <button className="back-btn" onClick={() => setSelectedBook(null)}>
+            ⬅ Back
+          </button>
+
+          <h1>{selectedBook.title}</h1>
+          <h3>{selectedBook.author}</h3>
+
+          <p className="desc">{selectedBook.description}</p>
+          <p className="rating">⭐ {selectedBook.rating}</p>
+
+          {/* 🤖 AI SECTION */}
+          <div className="askBox">
+            <input
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask about this book..."
+            />
+            <button onClick={askQuestion}>Ask AI</button>
+          </div>
+
+          {answer && <div className="answer">{answer}</div>}
+
+          {/* 📚 RECOMMENDATIONS */}
+          <button onClick={() => getRecommendations(selectedBook.id)}>
+            Get Recommendations
+          </button>
+
+          {recommendations.length > 0 && (
+            <div className="grid">
+              {recommendations.map((rec, i) => (
+                <div key={i} className="card">{rec}</div>
+              ))}
+            </div>
+          )}
         </div>
-
-        {answer && <div className="answer">{answer}</div>}
-      </div>
-
-      {/* BOOK GRID */}
-      <h2 className="title">Popular Books</h2>
-
-      <div className="grid">
-        {books.map((book) => (
-          <div key={book.id} className="card">
-            <h3>{book.title}</h3>
-            <p className="author">{book.author}</p>
-            <p>{book.description}</p>
-            <p className="rating">⭐ {book.rating}</p>
-
-            <button onClick={() => getRecommendations(book.id)}>
-              View Similar
-            </button>
-          </div>
-        ))}
-      </div>
-
-      {/* RECOMMENDATIONS */}
-      {recommendations.length > 0 && (
+      ) : (
         <>
-          <h2 className="title">Recommended</h2>
-          <div className="grid">
-            {recommendations.map((rec, i) => (
-              <div key={i} className="card">
-                {rec}
-              </div>
-            ))}
+          {/* HERO */}
+          <div className="hero">
+            <h1>Discover Books with AI</h1>
           </div>
+
+          {/* 🔍 SEARCH RESULTS */}
+          {search && (
+            <>
+              <h2 className="title">Search Results</h2>
+
+              <div className="grid">
+                {filteredBooks.slice(0, 10).map((book) => (
+                  <div
+                    key={book.id}
+                    className="card"
+                    onClick={() => setSelectedBook(book)}
+                  >
+                    <h3>{book.title}</h3>
+                    <p>{book.author}</p>
+                    <p>⭐ {book.rating}</p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </>
       )}
     </div>

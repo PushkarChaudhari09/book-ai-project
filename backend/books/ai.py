@@ -1,34 +1,31 @@
-import os
-from openai import OpenAI
-from dotenv import load_dotenv
-
-load_dotenv()
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-
-def generate_answer(context, question):
+def generate_summary(text):
     try:
-        from openai import OpenAI
-        import os
-        from dotenv import load_dotenv
+        text = text.replace("...", ".")
+        sentences = [s.strip() for s in text.split(".") if len(s.strip()) > 10]
 
-        load_dotenv()
+        if len(sentences) < 2:
+            summary = text
+        else:
+            summary = ". ".join(sentences[:2]) + "."
 
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        return summary
 
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful book assistant."},
-                {"role": "user", "content": f"Context: {context}\nQuestion: {question}"}
-            ]
-        )
+    except:
+        return text
 
-        return response.choices[0].message.content
 
-    except Exception as e:
-        print("AI ERROR:", e)
+def classify_genre(text):
+    text = text.lower()
 
-        # ✅ FALLBACK (ALWAYS WORKS)
-        return f"📚 Based on available books:\n\n{context[:500]}"
+    if "wizard" in text or "magic" in text:
+        return "Fantasy"
+    elif "love" in text or "romance" in text:
+        return "Romance"
+    elif "money" in text or "finance" in text:
+        return "Finance"
+    elif "crime" in text or "murder" in text:
+        return "Thriller"
+    elif "history" in text:
+        return "Historical"
+    else:
+        return "General"

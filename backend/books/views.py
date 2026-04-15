@@ -3,117 +3,174 @@ from rest_framework.response import Response
 from .models import Book
 from .serializers import BookSerializer
 
-# ================= BASIC CRUD =================
+# ================= BASIC =================
 
 @api_view(['GET'])
 def get_books(request):
     books = Book.objects.all()
-    serializer = BookSerializer(books, many=True)
-    return Response(serializer.data)
+    return Response(BookSerializer(books, many=True).data)
 
 
 @api_view(['GET'])
 def get_book(request, pk):
     try:
         book = Book.objects.get(id=pk)
-        serializer = BookSerializer(book)
-        return Response(serializer.data)
-    except Book.DoesNotExist:
-        return Response({"error": "Book not found"})
+        return Response(BookSerializer(book).data)
+    except:
+        return Response({"error": "Not found"})
 
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def add_book(request):
+
+    if request.method == 'GET':
+        return Response({
+            "message": "Use POST to add a book",
+            "example": {
+                "title": "Harry Potter",
+                "author": "J.K Rowling",
+                "description": "Wizard story",
+                "rating": 4.9
+            }
+        })
+
+    from .rag import add_book_to_vector
+
     serializer = BookSerializer(data=request.data)
 
     if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+        book = serializer.save()
+        add_book_to_vector(book)
+
+        return Response({
+            "message": "Book added successfully",
+            "data": serializer.data
+        })
 
     return Response(serializer.errors)
 
 
-# ================= AI FEATURES =================
+# ================= AI =================
 
-# TEMP SIMPLE VERSION (no AI crash)
-
-
-
-def generate_answer(context, question):
-    try:
-        from openai import OpenAI
-        import os
-        from dotenv import load_dotenv
-
-        load_dotenv()
-
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful book assistant."},
-                {"role": "user", "content": f"Context: {context}\nQuestion: {question}"}
-            ]
-        )
-
-        return response.choices[0].message.content
-
-    except Exception as e:
-        print("AI ERROR:", e)
-
-        # ✅ FALLBACK (ALWAYS WORKS)
-        return f"📚 Based on available books:\n\n{context[:500]}"
-@api_view(['GET'])
-def get_recommendations(request, book_id):
-    return Response({
-        "recommendations": [
-            "Sample Book 1",
-            "Sample Book 2",
-            "Sample Book 3"
-        ]
-    })
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def ask_question(request):
+
+    if request.method == 'GET':
+        return Response({
+            "message": "Use POST",
+            "example": {"question": "Harry Potter"}
+        })
+
+    from .rag import query_books
+
     question = request.data.get("question")
 
     if not question:
-        return Response({"answer": "Please ask something."})
+        return Response({"error": "Please provide a question"})
 
     try:
-        # 🔍 Try RAG first
-        from .rag import query_books
         results = query_books(question)
 
-        if results:
-            answer = "📚 Based on your query:\n\n"
-            for i, r in enumerate(results):
-                answer += f"{i+1}. {r}\n\n"
-            return Response({"answer": answer})
+        if not results:
+            return Response({"answer": "No relevant books found."})
+
+        text = results[0]
+
+        # 🔥 MAKE HUMAN-LIKE SENTENCE
+        words = text.split()
+
+        if len(words) >= 3:
+            title = words[0] + " " + words[1]
+            description = " ".join(words[2:])
+        else:
+            title = text
+            description = ""
+
+        answer = f"{title} is a book about {description.lower()}."
+
+        # optional enhancement
+        if "wizard" in text.lower():
+            answer += " It belongs to the fantasy genre."
+
+        return Response({
+            "question": question,
+            "answer": answer
+        })
 
     except Exception as e:
-        print("RAG ERROR:", e)
+        print("ERROR:", e)
+        return Response({
+            "answer": "Something went wrong"
+        })
+# 🔥 RECOMMENDATION
+@api_view(['GET'])
+def get_recommendations(request, book_id):
+    from .rag import recommend_books
 
-    # 🔥 FALLBACK 1 → DATABASE SEARCH
     try:
-        from .models import Book
+        recs = recommend_books(book_id)
+        return Response({"recommendations": recs})
+    except:
+        return Response({"recommendations": []})
 
-        books = Book.objects.filter(title__icontains=question)
 
-        if books.exists():
-            answer = "📚 Books found:\n\n"
-            for i, b in enumerate(books[:5]):
-                answer += f"{i+1}. {b.title} - {b.description}\n\n"
-            return Response({"answer": answer})
+# 🔥 SUMMARY
+@api_view(['GET', 'POST'])
+def generate_summary_view(request):
 
-    except Exception as e:
-        print("DB ERROR:", e)
+    if request.method == 'GET':
+        return Response({
+            "message": "Use POST",
+            "example": {"text": "Book description"}
+        })
 
-    # 🔥 FINAL FALLBACK (NEVER FAIL)
-    return Response({
-        "answer": f"📚 No AI available, but you searched for: '{question}'"
-    })
+    from .ai import generate_summary
+
+    text = request.data.get("text")
+    summary = generate_summary(text)
+
+    return Response({"summary": summary})
+
+
+# 🔥 GENRE
+@api_view(['GET', 'POST'])
+def classify_genre(request):
+
+    if request.method == 'GET':
+        return Response({
+            "message": "Use POST",
+            "example": {"description": "Wizard story"}
+        })
+
+    from .ai import classify_genre
+
+    desc = request.data.get("description")
+    genre = classify_genre(desc)
+
+    return Response({"genre": genre})
+
+
+# 🔥 CSV UPLOAD
+@api_view(['GET', 'POST'])
+def upload_books(request):
+
+    if request.method == 'GET':
+        return Response({
+            "message": "Upload CSV using POST"
+        })
+
+    import csv
+
+    file = request.FILES['file']
+    decoded = file.read().decode('utf-8').splitlines()
+    reader = csv.DictReader(decoded)
+
+    for row in reader:
+        Book.objects.create(
+            title=row['title'],
+            author=row['author'],
+            description=row['description'],
+            rating=row['rating']
+        )
+
+    return Response({"message": "Books uploaded successfully"})
