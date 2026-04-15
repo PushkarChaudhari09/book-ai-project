@@ -21,7 +21,7 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
 - ChromaDB
 - CSV-based ingestion
 
-## Screenshots
+### Screenshots
 
 # 1. Home Page
 
@@ -39,7 +39,7 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
 
 - C:\Users\pushk\book_ai_project\frontend\Scrreenshots\AI Response.png
 
-## Setup Instructions
+### Setup Instructions
 
 # 1. Backend Setup
 
@@ -60,7 +60,7 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
     npm install 
     npm start
 
-## API Documentation
+### API Documentation
 
 # 1. GET APIs
 
@@ -75,7 +75,7 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
     /api/books/add/ → Add book
     /api/upload/ → Upload CSV
 
-## Sample Questions & Answers
+### Sample Questions & Answers
 
 # 1. Sample Questions & Answers
 - A fantasy story about a young wizard discovering magic, friendship, and courage.
