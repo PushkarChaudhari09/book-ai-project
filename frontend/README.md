@@ -83,11 +83,4 @@ Sample Questions & Answers
 2. Recommend books like Atomic Habits
 - Deep Work, Think and Grow Rich, The Power of Now.
 
-requirements.txt
-
-django
-djangorestframework
-corsheaders
-chromadb 
-python-dotenv
 
