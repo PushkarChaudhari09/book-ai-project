@@ -41,7 +41,7 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
 
 ### Setup Instructions
 
-# 1. Backend Setup
+1. Backend Setup
 
     cd backend
 
@@ -53,7 +53,7 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
     python manage.py migrate 
     python manage.py runserver
 
-# 2. Frontend Setup
+ 2. Frontend Setup
 
     cd frontend
 
@@ -62,13 +62,13 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
 
 ### API Documentation
 
-# 1. GET APIs
+ 1. GET APIs
 
     /api/books/ → Get all books
     /api/books/<id>/ → Get single book
     /api/recommend/<id>/ → Get recommendations
 
-# 2. POST APIs
+ 2. POST APIs
 
     /api/ask/ → Ask AI question
     /api/summary/ → Generate summary
@@ -77,10 +77,10 @@ A full-stack AI-powered book discovery platform built using Django REST Framewor
 
 ### Sample Questions & Answers
 
-# 1. Sample Questions & Answers
+ 1. Sample Questions & Answers
 - A fantasy story about a young wizard discovering magic, friendship, and courage.
 
-# 2. Recommend books like Atomic Habits
+ 2. Recommend books like Atomic Habits
 - Deep Work, Think and Grow Rich, The Power of Now.
 
 
